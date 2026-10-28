@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 type Player = {
   nickname: string;
@@ -10,7 +10,7 @@ type Player = {
   troop3?: number;
 };
 
-const players: Player[] = [
+const initialPlayers: Player[] = [
   { nickname: "«Алекс»", power: 0 },
   { nickname: "Myshkïn", power: 34200000, troop2: 31500000, troop3: 29800000 },
   { nickname: "iKWAI", power: 32400000 },
@@ -105,19 +105,59 @@ const players: Player[] = [
 
 export default function Home() {
   const [search, setSearch] = useState("");
+const [editingPlayer, setEditingPlayer] =
+  useState<string | null>(null);
+
+const [roster, setRoster] = useState<Player[]>(() => {
+  if (typeof window !== "undefined") {
+    const saved =
+      localStorage.getItem("n3xRoster");
+
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  }
+
+  return initialPlayers;
+
+});
+
+useEffect(() => {
+  localStorage.setItem(
+    "n3xRoster",
+    JSON.stringify(roster)
+  );
+}, [roster]);
 
   const filteredPlayers = useMemo(() => {
-    return players
+    return roster
       .filter((player) =>
         player.nickname.toLowerCase().includes(search.toLowerCase())
       )
       .sort((a, b) => b.power - a.power);
   }, [search]);
 
-  const totalPower = players.reduce(
+  const totalPower = roster.reduce(
     (sum, p) => sum + p.power,
     0
   );
+
+const updatePlayerField = (
+  nickname: string,
+  field: "power" | "troop2" | "troop3",
+  value: number
+) => {
+  setRoster((prev) =>
+    prev.map((player) =>
+      player.nickname === nickname
+        ? {
+            ...player,
+            [field]: value,
+          }
+        : player
+    )
+  );
+};
 
   return (
     <main
@@ -144,7 +184,7 @@ export default function Home() {
 </Link>
 
       <div style={{ marginBottom: "20px" }}>
-        <p>👥 Jugadores: {players.length}</p>
+        <p>👥 Jugadores: {roster.length}</p>
 
         <p>
           📊 Poder Total:{" "}
@@ -180,40 +220,135 @@ export default function Home() {
             borderRadius: "10px",
           }}
         >
-         <strong>
-  #{index + 1} {player.nickname}
-</strong>
 
+<div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "10px",
+  }}
+>
+  <strong
+    style={{
+      fontSize: "18px",
+      color: "#f59e0b",
+    }}
+  >
+    #{index + 1} {player.nickname}
+  </strong>
 
-          <div>
-            Poder: {(player.power / 1000000).toFixed(1)}M
-          </div>
-
-<div>
-  Total militar:{" "}
-  {(
-    (
-      player.power +
-      (player.troop2 ?? 0) +
-      (player.troop3 ?? 0)
-    ) / 1000000
-  ).toFixed(1)}
-  M
+  <button
+    onClick={() =>
+      setEditingPlayer(
+        editingPlayer === player.nickname
+          ? null
+          : player.nickname
+      )
+    }
+    style={{
+      background: "#2563eb",
+      border: "none",
+      color: "white",
+      padding: "8px 12px",
+      borderRadius: "8px",
+      cursor: "pointer",
+    }}
+  >
+    {editingPlayer === player.nickname
+      ? "Cerrar"
+      : "✏️ Editar"}
+  </button>
 </div>
 
-          {!!player.troop2 && (
-            <div>
-              T2: {(player.troop2 / 1000000).toFixed(1)}M
-            </div>
-          )}
+<div
+  style={{
+    marginTop: "10px",
+    color: "#94a3b8",
+    fontSize: "14px",
+  }}
+>
+  {editingPlayer === player.nickname
+    ? "Modo edición activado"
+    : ""}
+</div>
 
-          {!!player.troop3 && (
-            <div>
-              T3: {(player.troop3 / 1000000).toFixed(1)}M
-            </div>
-          )}
-        </div>
-      ))}
+          <div>
+  T1: {(player.power / 1000000).toFixed(1)}M
+
+
+            <input
+ type="text"
+inputMode="numeric"
+  defaultValue={player.power}
+onChange={(e) =>
+  updatePlayerField(
+    player.nickname,
+    "power",
+    Number(e.target.value)
+  )
+}
+
+  style={{
+    width: "100%",
+    marginTop: "8px",
+    padding: "8px",
+    borderRadius: "6px",
+  }}
+/>
+          </div>
+
+
+
+          <div style={{ marginTop: "10px" }}>
+  T2
+
+  <input
+   type="text"
+inputMode="numeric"
+   defaultValue={player.troop2 ?? 0}
+    onChange={(e) =>
+      updatePlayerField(
+        player.nickname,
+        "troop2",
+        Number(e.target.value)
+      )
+    }
+    style={{
+      width: "100%",
+      padding: "8px",
+      borderRadius: "6px",
+      marginTop: "5px",
+    }}
+  />
+</div>
+
+      <div style={{ marginTop: "10px" }}>
+  T3
+
+  <input
+   type="text"
+inputMode="numeric"
+   defaultValue={player.troop3 ?? 0}
+    onChange={(e) =>
+      updatePlayerField(
+        player.nickname,
+        "troop3",
+        Number(e.target.value)
+      )
+    }
+    style={{
+      width: "100%",
+      padding: "8px",
+      borderRadius: "6px",
+      marginTop: "5px",
+    }}
+  />
+
+</div>
+  </div>
+   ))}
+
     </main>
   );
 }
