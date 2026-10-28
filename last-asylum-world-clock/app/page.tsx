@@ -14,20 +14,18 @@ export default function Home() {
 
   const [serverInput, setServerInput] = useState("07:29:30");
 
-  const [zones, setZones] = useState<Zone[]>([
-    { name: "🇬🇧 Reino Unido", offset: 0 },
-    { name: "🇪🇸 España", offset: 1 },
-    { name: "🇷🇺 Moscú", offset: 3 },
-    { name: "🇷🇺 Rusia UTC+5", offset: 5 },
-    { name: "🇷🇺 Rusia UTC+7", offset: 7 },
-    { name: "🇧🇷 Brasil", offset: -3 },
-    { name: "🇺🇸 New York", offset: -5 },
-    { name: "🇯🇵 Japón", offset: 9 },
-  ]);
+const [zones, setZones] = useState<Zone[]>([
+  { name: "🇪🇸 España", offset: 0 },
+  { name: "🇷🇺 Moscú", offset: 2 },
+  { name: "🇷🇺 Rusia +7", offset: 4 },
+  { name: "🇧🇷 Brasil", offset: -4 },
+  { name: "🇺🇸 New York", offset: -6 },
+  { name: "🇯🇵 Japón", offset: 8 },
+]);
 
   const [newCountry, setNewCountry] = useState("");
   const [newOffset, setNewOffset] = useState("0");
-
+const [spainOffset, setSpainOffset] = useState("3");
   useEffect(() => {
     const savedTime = localStorage.getItem("serverTime");
 
@@ -189,59 +187,86 @@ export default function Home() {
           >
             Hora Actual
           </button>
+
         </div>
 
-        <div
-          style={{
-            marginTop: "20px",
-            display: "flex",
-            justifyContent: "center",
-            gap: "10px",
-            flexWrap: "wrap",
-          }}
-        >
-          <input
-            placeholder="País o zona"
-            value={newCountry}
-            onChange={(e) => setNewCountry(e.target.value)}
-            style={{
-              padding: "10px",
-              borderRadius: "8px",
-            }}
-          />
+<div
+  style={{
+    marginTop: "15px",
+    color: "#cbd5e1",
+  }}
+>
+  Referencia España ↔ Servidor
 
-          <input
-            type="number"
-            placeholder="UTC"
-            value={newOffset}
-            onChange={(e) => setNewOffset(e.target.value)}
-            style={{
-              width: "80px",
-              padding: "10px",
-              borderRadius: "8px",
-            }}
-          />
+  <input
+    type="number"
+    value={spainOffset}
+    onChange={(e) => setSpainOffset(e.target.value)}
+    style={{
+      width: "60px",
+      marginLeft: "10px",
+      padding: "5px",
+      textAlign: "center",
+      borderRadius: "6px",
+    }}
+  />
+</div>
 
-          <button
-            onClick={addZone}
-            style={{
-              padding: "10px 15px",
-              background: "#f97316",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-            }}
-          >
-            ➕ Añadir
-          </button>
-        </div>
-      </div>
+<div
+  style={{
+    marginTop: "20px",
+    display: "flex",
+    justifyContent: "center",
+    gap: "10px",
+    flexWrap: "wrap",
+  }}
+>
+  <input
+    placeholder="País o zona"
+    value={newCountry}
+    onChange={(e) => setNewCountry(e.target.value)}
+    style={{
+      padding: "10px",
+      borderRadius: "8px",
+    }}
+  />
+
+  <input
+    type="number"
+    placeholder="Dif."
+    value={newOffset}
+    onChange={(e) => setNewOffset(e.target.value)}
+    style={{
+      width: "80px",
+      padding: "10px",
+      borderRadius: "8px",
+    }}
+  />
+
+  <button
+    onClick={addZone}
+    style={{
+      padding: "10px 15px",
+      background: "#f97316",
+      color: "white",
+      border: "none",
+      borderRadius: "8px",
+      cursor: "pointer",
+    }}
+  >
+    ➕ Añadir
+  </button>
+</div>
+
+
+
+</div>
 
       {zones.map((zone) => {
-        const localTime = new Date(
-          serverTime.getTime() + zone.offset * 3600000
-        );
+      const localTime = new Date(
+  serverTime.getTime() +
+    (Number(spainOffset) + zone.offset) * 3600000
+);
 
         const hour = localTime.getHours();
 
@@ -269,11 +294,11 @@ export default function Home() {
               alignItems: "center",
             }}
           >
-            <span>
-              {status} {zone.name} (UTC
-              {zone.offset >= 0 ? "+" : ""}
-              {zone.offset})
-            </span>
+<span>
+  {status} {zone.name} (
+  {zone.offset >= 0 ? "+" : ""}
+  {zone.offset}h servidor)
+</span>
 
             <strong
               style={{
