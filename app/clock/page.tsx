@@ -43,13 +43,29 @@ useEffect(() => {
   }
 }, []);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setServerTime((prev) => new Date(prev.getTime() + 1000));
-    }, 1000);
+useEffect(() => {
+  const timer = setInterval(() => {
+    setServerTime((prev) => {
+      const updated = new Date(
+        prev.getTime() + 1000
+      );
 
-    return () => clearInterval(timer);
-  }, []);
+      localStorage.setItem(
+        "serverTime",
+        updated.toISOString()
+      );
+
+      localStorage.setItem(
+        "savedAt",
+        Date.now().toString()
+      );
+
+      return updated;
+    });
+  }, 1000);
+
+  return () => clearInterval(timer);
+}, []);
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString("es-ES", {
