@@ -6,7 +6,10 @@ type Zone = {
   name: string;
   offset: number;
 };
-
+type Event = {
+  name: string;
+  time: string;
+};
 export default function Home() {
   const [serverTime, setServerTime] = useState(
     new Date(2024, 0, 1, 7, 29, 30)
@@ -24,11 +27,19 @@ const [zones, setZones] = useState<Zone[]>([
 ]);
 
   const [newCountry, setNewCountry] = useState("");
+  const [eventName, setEventName] = useState("");
+const [eventTime, setEventTime] = useState("");
+const [showEvent, setShowEvent] = useState(false);
+const [events, setEvents] = useState<Event[]>([]);
   const [newOffset, setNewOffset] = useState("0");
 const [spainOffset, setSpainOffset] = useState("3");
+
 useEffect(() => {
-  const savedTime = localStorage.getItem("serverTime");
-  const savedAt = localStorage.getItem("savedAt");
+  const savedTime =
+    localStorage.getItem("serverTime");
+
+  const savedAt =
+    localStorage.getItem("savedAt");
 
   if (savedTime && savedAt) {
     const elapsed =
@@ -42,6 +53,22 @@ useEffect(() => {
     setServerTime(correctedTime);
   }
 }, []);
+
+useEffect(() => {
+  const saved =
+    localStorage.getItem("events");
+
+  if (saved) {
+    setEvents(JSON.parse(saved));
+  }
+}, []);
+
+useEffect(() => {
+  localStorage.setItem(
+    "events",
+    JSON.stringify(events)
+  );
+}, [events]);
 
 useEffect(() => {
   const timer = setInterval(() => {
@@ -114,6 +141,116 @@ const updateServerTime = () => {
     setNewCountry("");
     setNewOffset("0");
   };
+const saveEvent = () => {
+  if (!eventName.trim()) return;
+  if (!eventTime.trim()) return;
+
+  setEvents((prev) => [
+    ...prev,
+    {
+      name: eventName,
+      time: eventTime,
+    },
+  ]);
+};
+
+const copyEventTimes = () => {
+  if (!eventTime) return;
+
+let text = "";
+
+text += "🏰 EVENTO DE ALIANZA\n";
+text += "══════════════════\n\n";
+
+text += `📌 ${name}\n`;
+text += `🕒 Hora servidor: ${eventTime}\n\n`;
+
+text += "🌍 HORARIOS MUNDIALES\n\n";
+
+
+  zones.forEach((zone) => {
+    const [hours, minutes] =
+      eventTime.split(":");
+
+    const eventDate = new Date();
+
+    eventDate.setHours(
+      Number(hours),
+      Number(minutes),
+      0,
+      0
+    );
+
+    const convertedDate = new Date(
+      eventDate.getTime() +
+        (Number(spainOffset) +
+          zone.offset) *
+          3600000
+    );
+
+text += `🌍 ${zone.name} →: ${convertedDate.toLocaleTimeString(
+  "es-ES",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }
+    )}\n`;
+  });
+
+  navigator.clipboard.writeText(text);
+
+  alert("✅ Horarios copiados");
+};
+
+const copySavedEvent = (
+  name: string,
+  time: string
+) => {
+let text = "";
+
+text += "🏰 EVENTO DE ALIANZA\n";
+text += "══════════════════\n\n";
+
+text += `📌 ${name}\n`;
+text += `🕒 Hora servidor: ${time}\n\n`;
+
+text += "🌍 HORARIOS MUNDIALES\n\n";
+
+  zones.forEach((zone) => {
+    const [hours, minutes] =
+      time.split(":");
+
+    const eventDate = new Date();
+
+    eventDate.setHours(
+      Number(hours),
+      Number(minutes),
+      0,
+      0
+    );
+
+    const convertedDate = new Date(
+      eventDate.getTime() +
+        (Number(spainOffset) +
+          zone.offset) *
+          3600000
+    );
+
+    text += `${zone.name}: ${convertedDate.toLocaleTimeString(
+      "es-ES",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }
+    )}\n`;
+  });
+
+  navigator.clipboard.writeText(text);
+
+  alert("✅ Horarios copiados");
+};
 
   return (
     <main
@@ -305,11 +442,196 @@ localStorage.setItem(
     ➕ Añadir
   </button>
 </div>
-
-
-
 </div>
 
+<div
+  style={{
+    background: "#1e293b",
+    padding: "20px",
+    borderRadius: "12px",
+    marginBottom: "20px",
+  }}
+>
+  <h2>📅 Conversor de Eventos</h2>
+
+  <input
+    placeholder="Nombre del evento"
+    value={eventName}
+    onChange={(e) => setEventName(e.target.value)}
+    style={{
+      width: "100%",
+      padding: "10px",
+      marginBottom: "10px",
+      borderRadius: "8px",
+    }}
+  />
+
+  <input
+    placeholder="Hora servidor (HH:MM)"
+    value={eventTime}
+    onChange={(e) => setEventTime(e.target.value)}
+    style={{
+      width: "100%",
+      padding: "10px",
+      marginBottom: "10px",
+      borderRadius: "8px",
+    }}
+  />
+
+  <button
+    onClick={() => setShowEvent(true)}
+    style={{
+      padding: "10px 15px",
+      background: "#2563eb",
+      color: "white",
+      border: "none",
+      borderRadius: "8px",
+      cursor: "pointer",
+    }}
+  >
+    📅 Calcular
+  </button>
+
+<button
+  onClick={copyEventTimes}
+  style={{
+    marginLeft: "10px",
+    padding: "10px 15px",
+    background: "#9333ea",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+  }}
+>
+  📋 Copiar horarios
+</button>
+
+<button
+  onClick={saveEvent}
+  style={{
+    marginLeft: "10px",
+    padding: "10px 15px",
+    background: "#16a34a",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+  }}
+>
+  💾 Guardar evento
+</button>
+
+  {showEvent && eventTime && (
+    <div style={{ marginTop: "20px" }}>
+      <h3>
+        🏰 {eventName || "Evento"}
+      </h3>
+
+      {zones.map((zone) => {
+        const [hours, minutes] =
+          eventTime.split(":");
+
+        const eventDate = new Date();
+
+        eventDate.setHours(
+          Number(hours),
+          Number(minutes),
+          0,
+          0
+        );
+
+        const convertedDate = new Date(
+          eventDate.getTime() +
+            (Number(spainOffset) +
+              zone.offset) *
+              3600000
+        );
+
+        return (
+          <div
+            key={`event-${zone.name}`}
+            style={{
+              display: "flex",
+              justifyContent:
+                "space-between",
+              padding: "5px 0",
+            }}
+          >
+            <span>{zone.name}</span>
+
+            <strong>
+              {convertedDate.toLocaleTimeString(
+                "es-ES",
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false,
+                }
+              )}
+            </strong>
+          </div>
+        );
+      })}
+    </div>
+  )}
+</div>
+
+<div
+  style={{
+    background: "#1e293b",
+    padding: "20px",
+    borderRadius: "12px",
+    marginBottom: "20px",
+  }}
+>
+  <h2>📅 Eventos Guardados</h2>
+
+  {events.length === 0 && (
+    <p>No hay eventos guardados.</p>
+  )}
+
+  {events.map((event, index) => (
+    <div
+      key={index}
+      style={{
+        padding: "10px",
+        marginBottom: "10px",
+        background: "#334155",
+        borderRadius: "8px",
+      }}
+    >
+      <strong>{event.name}</strong>
+
+      <div>
+        🕒 Servidor: {event.time}
+      </div>
+
+      
+    
+      <button
+  onClick={() =>
+    copySavedEvent(
+      event.name,
+      event.time
+    )
+  }
+  style={{
+    marginTop: "10px",
+    background: "#9333ea",
+    color: "white",
+    border: "none",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    cursor: "pointer",
+  }}
+>
+  📋 Copiar
+</button>
+    </div>
+
+  ))}
+</div>
       {zones.map((zone) => {
       const localTime = new Date(
   serverTime.getTime() +
