@@ -142,11 +142,21 @@ useEffect(() => {
       .sort((a, b) => b.power - a.power);
 }, [search, roster]);
 
-  const totalPower = roster.reduce(
-    (sum, p) => sum + p.power,
-    0
-  );
+const totalPower = roster.reduce(
+  (sum, p) => sum + p.power,
+  0
+);
 
+
+const totalT2 = roster.reduce(
+  (sum, p) => sum + (p.troop2 ?? 0),
+  0
+);
+
+const totalT3 = roster.reduce(
+  (sum, p) => sum + (p.troop3 ?? 0),
+  0
+);
 const updatePlayerField = (
   nickname: string,
   field: "power" | "troop2" | "troop3",
@@ -300,10 +310,17 @@ const deletePlayer = (nickname: string) => {
       <div style={{ marginBottom: "20px" }}>
         <p>👥 Jugadores: {roster.length}</p>
 
-        <p>
-          📊 Poder Total:{" "}
-          {(totalPower / 1000000).toFixed(1)}M
-        </p>
+    <p>
+  ⚔️ Total T1: {(totalPower / 1000000).toFixed(1)}M
+</p>
+
+<p>
+  🛡️ Total T2: {(totalT2 / 1000000).toFixed(1)}M
+</p>
+
+<p>
+  🏹 Total T3: {(totalT3 / 1000000).toFixed(1)}M
+</p>
       </div>
 
    <input
@@ -375,17 +392,8 @@ const deletePlayer = (nickname: string) => {
   </button>
 </div>
 
-<div
-  style={{
-    marginTop: "10px",
-    color: "#94a3b8",
-    fontSize: "14px",
-  }}
->
-  {editingPlayer === player.nickname
-    ? "Modo edición activado"
-    : ""}
-</div>
+{editingPlayer === player.nickname && (
+  <>
 
           <div>
   T1: {(player.power / 1000000).toFixed(1)}M
@@ -477,6 +485,8 @@ inputMode="numeric"
 </button>
 
 </div>
+  </>
+)}
   </div>
    ))}
 
