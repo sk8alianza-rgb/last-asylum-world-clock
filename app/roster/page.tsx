@@ -108,6 +108,11 @@ export default function Home() {
 const [editingPlayer, setEditingPlayer] =
   useState<string | null>(null);
 
+  const [newNickname, setNewNickname] = useState("");
+const [newT1, setNewT1] = useState("");
+const [newT2, setNewT2] = useState("");
+const [newT3, setNewT3] = useState("");
+
 const [roster, setRoster] = useState<Player[]>(() => {
   if (typeof window !== "undefined") {
     const saved =
@@ -135,7 +140,7 @@ useEffect(() => {
         player.nickname.toLowerCase().includes(search.toLowerCase())
       )
       .sort((a, b) => b.power - a.power);
-  }, [search]);
+}, [search, roster]);
 
   const totalPower = roster.reduce(
     (sum, p) => sum + p.power,
@@ -155,6 +160,41 @@ const updatePlayerField = (
             [field]: value,
           }
         : player
+    )
+  );
+};
+
+const addPlayer = () => {
+  if (!newNickname.trim()) return;
+
+  const newPlayer: Player = {
+    nickname: newNickname.trim(),
+    power: Number(newT1) || 0,
+    troop2: Number(newT2) || 0,
+    troop3: Number(newT3) || 0,
+  };
+
+  setRoster((prev) => [...prev, newPlayer]);
+
+  setNewNickname("");
+  setNewT1("");
+  setNewT2("");
+  setNewT3("");
+};
+
+const deletePlayer = (nickname: string) => {
+  if (
+    !window.confirm(
+      `¿Eliminar a ${nickname} del roster?`
+    )
+  ) {
+    return;
+  }
+
+  setRoster((prev) =>
+    prev.filter(
+      (player) =>
+        player.nickname !== nickname
     )
   );
 };
@@ -183,6 +223,80 @@ const updatePlayerField = (
   🏠 Inicio
 </Link>
 
+<div
+  style={{
+    background: "#1e293b",
+    padding: "15px",
+    borderRadius: "10px",
+    marginBottom: "20px",
+  }}
+>
+  <h3>➕ Nuevo jugador</h3>
+
+  <input
+    placeholder="Nickname"
+    value={newNickname}
+    onChange={(e) =>
+      setNewNickname(e.target.value)
+    }
+    style={{
+      width: "100%",
+      padding: "10px",
+      marginBottom: "10px",
+      borderRadius: "8px",
+    }}
+  />
+
+  <input
+    placeholder="T1"
+    value={newT1}
+    onChange={(e) => setNewT1(e.target.value)}
+    style={{
+      width: "100%",
+      padding: "10px",
+      marginBottom: "10px",
+      borderRadius: "8px",
+    }}
+  />
+
+  <input
+    placeholder="T2"
+    value={newT2}
+    onChange={(e) => setNewT2(e.target.value)}
+    style={{
+      width: "100%",
+      padding: "10px",
+      marginBottom: "10px",
+      borderRadius: "8px",
+    }}
+  />
+
+  <input
+    placeholder="T3"
+    value={newT3}
+    onChange={(e) => setNewT3(e.target.value)}
+    style={{
+      width: "100%",
+      padding: "10px",
+      marginBottom: "10px",
+      borderRadius: "8px",
+    }}
+  />
+
+  <button
+    onClick={addPlayer}
+    style={{
+      background: "#16a34a",
+      color: "white",
+      border: "none",
+      padding: "10px 15px",
+      borderRadius: "8px",
+      cursor: "pointer",
+    }}
+  >
+    ➕ Añadir jugador
+  </button>
+</div>
       <div style={{ marginBottom: "20px" }}>
         <p>👥 Jugadores: {roster.length}</p>
 
@@ -344,6 +458,23 @@ inputMode="numeric"
       marginTop: "5px",
     }}
   />
+
+<button
+  onClick={() =>
+    deletePlayer(player.nickname)
+  }
+  style={{
+    background: "#dc2626",
+    color: "white",
+    border: "none",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    marginTop: "15px",
+  }}
+>
+  🗑️ Eliminar jugador
+</button>
 
 </div>
   </div>
