@@ -209,6 +209,34 @@ const deletePlayer = (nickname: string) => {
   );
 };
 
+const exportRoster = () => {
+const data = JSON.stringify(
+  roster,
+  null,
+  2
+);
+
+  const blob = new Blob(
+    [data],
+    {
+      type: "application/json",
+    }
+  );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+  a.download = "n3x-roster.json";
+
+  a.click();
+
+  URL.revokeObjectURL(url);
+};
+
   return (
     <main
       style={{
@@ -219,6 +247,21 @@ const deletePlayer = (nickname: string) => {
       }}
     >
       <h1>🐝 N3X Roster</h1>
+
+<button
+  onClick={exportRoster}
+  style={{
+    background: "#2563eb",
+    color: "white",
+    border: "none",
+    padding: "10px 15px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    marginBottom: "15px",
+  }}
+>
+  💾 Exportar roster
+</button>
 
 <Link
   href="/"
