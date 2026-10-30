@@ -237,6 +237,36 @@ const data = JSON.stringify(
   URL.revokeObjectURL(url);
 };
 
+const importRoster = (
+  event: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = event.target.files?.[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    try {
+      const importedRoster = JSON.parse(
+        e.target?.result as string
+      );
+
+      setRoster(importedRoster);
+
+      alert(
+        "✅ Roster importado correctamente"
+      );
+    } catch {
+      alert(
+        "❌ El archivo no es válido"
+      );
+    }
+  };
+
+  reader.readAsText(file);
+};
+
   return (
     <main
       style={{
@@ -262,6 +292,30 @@ const data = JSON.stringify(
 >
   💾 Exportar roster
 </button>
+
+<label
+  style={{
+    background: "#16a34a",
+    color: "white",
+    border: "none",
+    padding: "10px 15px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    marginLeft: "10px",
+    display: "inline-block",
+  }}
+>
+  📂 Importar roster
+
+  <input
+    type="file"
+    accept=".json"
+    onChange={importRoster}
+    style={{
+      display: "none",
+    }}
+  />
+</label>
 
 <Link
   href="/"
