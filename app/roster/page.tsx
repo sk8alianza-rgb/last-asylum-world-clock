@@ -457,14 +457,33 @@ const importRoster = (
     marginBottom: "10px",
   }}
 >
-  <strong
-    style={{
-      fontSize: "18px",
-      color: "#f59e0b",
-    }}
-  >
-    #{index + 1} {player.nickname}
-  </strong>
+<div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+  }}
+>
+<strong
+  style={{
+    fontSize: "18px",
+    color: "#e74c0af9",
+    marginRight: "40px",
+  }}
+>
+  #{index + 1} {player.nickname}
+</strong>
+
+<span
+  style={{
+    color: "#dfcc1d",
+    fontWeight: "bold",
+    fontSize: "16px",
+  }}
+>
+  ⚔️ {(player.power / 1000000).toFixed(1)}M
+</span>
+</div>
 
   <button
     onClick={() =>
