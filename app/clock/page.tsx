@@ -6,18 +6,6 @@ type Zone = {
   name: string;
   offset: number;
 };
-
-const availableZones: Zone[] = [
-  { name: "🇪🇸 España", offset: 0 },
-  { name: "🇷🇺 Moscú", offset: 2 },
-  { name: "🇷🇺 Rusia +7", offset: 4 },
-  { name: "🇧🇷 Brasil", offset: -4 },
-  { name: "🇺🇸 New York", offset: -6 },
-  { name: "🇺🇸 Los Angeles", offset: -9 },
-  { name: "🇯🇵 Japón", offset: 8 },
-  { name: "🇦🇺 Sydney", offset: 9 },
-];
-
 type Event = {
   name: string;
   time: string;
@@ -39,8 +27,6 @@ const [zones, setZones] = useState<Zone[]>([
 ]);
 
   const [newCountry, setNewCountry] = useState("");
-  const [selectedZone, setSelectedZone] =
-  useState("🇪🇸 España");
   const [eventName, setEventName] = useState("");
 const [eventTime, setEventTime] = useState("");
 const [showEvent, setShowEvent] = useState(false);
@@ -166,6 +152,25 @@ const saveEvent = () => {
       time: eventTime,
     },
   ]);
+};
+
+const loadEvent = (
+  name: string,
+  time: string
+) => {
+  setEventName(name);
+  setEventTime(time);
+  setShowEvent(true);
+};
+
+const deleteEvent = (
+  index: number
+) => {
+  setEvents((prev) =>
+    prev.filter(
+      (_, i) => i !== index
+    )
+  );
 };
 
 const copyEventTimes = () => {
@@ -621,8 +626,25 @@ localStorage.setItem(
         🕒 Servidor: {event.time}
       </div>
 
+<button
+  onClick={() => {
+    setEventName(event.name);
+    setEventTime(event.time);
+  }}
+  style={{
+    marginTop: "10px",
+    marginRight: "10px",
+    background: "#f59e0b",
+    color: "white",
+    border: "none",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    cursor: "pointer",
+  }}
+>
+  ✏️ Editar
+</button>
       
-    
       <button
   onClick={() =>
     copySavedEvent(
@@ -642,8 +664,26 @@ localStorage.setItem(
 >
   📋 Copiar
 </button>
-    </div>
 
+<button
+  onClick={() =>
+    deleteEvent(index)
+  }
+  style={{
+    marginTop: "10px",
+    marginLeft: "10px",
+    background: "#dc2626",
+    color: "white",
+    border: "none",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    cursor: "pointer",
+  }}
+>
+  🗑 Eliminar
+</button>
+
+    </div>
   ))}
 </div>
       {zones.map((zone) => {
