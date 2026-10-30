@@ -128,6 +128,16 @@ const updateServerTime = () => {
 };
 
   const addZone = () => {
+    const deleteZone = (
+  zoneName: string
+) => {
+  setZones((prev) =>
+    prev.filter(
+      (zone) =>
+        zone.name !== zoneName
+    )
+  );
+};
     if (!newCountry.trim()) return;
 
     setZones([
@@ -732,6 +742,22 @@ localStorage.setItem(
             >
               {formatTime(localTime)}
             </strong>
+            <button
+  onClick={() =>
+    deleteZone(zone.name)
+  }
+  style={{
+    background: "#dc2626",
+    color: "white",
+    border: "none",
+    padding: "5px 8px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    marginLeft: "10px",
+  }}
+>
+  🗑
+</button>
           </div>
         );
       })}
