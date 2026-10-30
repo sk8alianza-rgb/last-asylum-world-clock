@@ -6,6 +6,18 @@ type Zone = {
   name: string;
   offset: number;
 };
+
+const availableZones: Zone[] = [
+  { name: "🇪🇸 España", offset: 0 },
+  { name: "🇷🇺 Moscú", offset: 2 },
+  { name: "🇷🇺 Rusia +7", offset: 4 },
+  { name: "🇧🇷 Brasil", offset: -4 },
+  { name: "🇺🇸 New York", offset: -6 },
+  { name: "🇺🇸 Los Angeles", offset: -9 },
+  { name: "🇯🇵 Japón", offset: 8 },
+  { name: "🇦🇺 Sydney", offset: 9 },
+];
+
 type Event = {
   name: string;
   time: string;
@@ -27,6 +39,8 @@ const [zones, setZones] = useState<Zone[]>([
 ]);
 
   const [newCountry, setNewCountry] = useState("");
+  const [selectedZone, setSelectedZone] =
+  useState("🇪🇸 España");
   const [eventName, setEventName] = useState("");
 const [eventTime, setEventTime] = useState("");
 const [showEvent, setShowEvent] = useState(false);
