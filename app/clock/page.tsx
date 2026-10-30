@@ -126,9 +126,7 @@ const updateServerTime = () => {
     Date.now().toString()
   );
 };
-
-  const addZone = () => {
-    const deleteZone = (
+const deleteZone = (
   zoneName: string
 ) => {
   setZones((prev) =>
@@ -138,6 +136,8 @@ const updateServerTime = () => {
     )
   );
 };
+
+const addZone = () => {
     if (!newCountry.trim()) return;
 
     setZones([
