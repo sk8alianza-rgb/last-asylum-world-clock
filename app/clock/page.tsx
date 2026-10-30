@@ -129,6 +129,14 @@ const updateServerTime = () => {
 const deleteZone = (
   zoneName: string
 ) => {
+  if (
+    !window.confirm(
+      `¿Eliminar ${zoneName}?`
+    )
+  ) {
+    return;
+  }
+
   setZones((prev) =>
     prev.filter(
       (zone) =>
