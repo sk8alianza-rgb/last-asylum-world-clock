@@ -17,14 +17,26 @@ export default function Home() {
 
   const [serverInput, setServerInput] = useState("07:29:30");
 
-const [zones, setZones] = useState<Zone[]>([
-  { name: "🇪🇸 España", offset: 0 },
-  { name: "🇷🇺 Moscú", offset: 2 },
-  { name: "🇷🇺 Rusia +7", offset: 4 },
-  { name: "🇧🇷 Brasil", offset: -4 },
-  { name: "🇺🇸 New York", offset: -6 },
-  { name: "🇯🇵 Japón", offset: 8 },
-]);
+const [zones, setZones] = useState<Zone[]>(() => {
+  if (typeof window !== "undefined") {
+    const saved =
+      localStorage.getItem("zones");
+
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  }
+
+  return [
+    { name: "🇪🇸 España", offset: 0 },
+    { name: "🇷🇺 Moscú", offset: 2 },
+    { name: "🇷🇺 Rusia +7", offset: 4 },
+    { name: "🇧🇷 Brasil", offset: -4 },
+    { name: "🇺🇸 New York", offset: -6 },
+    { name: "🇯🇵 Japón", offset: 8 },
+  ];
+});
+
 
   const [newCountry, setNewCountry] = useState("");
   const [eventName, setEventName] = useState("");
@@ -69,6 +81,13 @@ useEffect(() => {
     JSON.stringify(events)
   );
 }, [events]);
+
+useEffect(() => {
+  localStorage.setItem(
+    "zones",
+    JSON.stringify(zones)
+  );
+}, [zones]);
 
 useEffect(() => {
   const timer = setInterval(() => {
