@@ -244,7 +244,7 @@ text += "🌍 HORARIOS MUNDIALES\n\n";
           3600000
     );
 
-text += `🌍 ${zone.name} →: ${convertedDate.toLocaleTimeString(
+text += `${zone.name} → ${convertedDate.toLocaleTimeString(
   "es-ES",
       {
         hour: "2-digit",
@@ -259,6 +259,26 @@ text += `🌍 ${zone.name} →: ${convertedDate.toLocaleTimeString(
   alert("✅ Horarios copiados");
 };
 
+const countryFlags: Record<string, string> = {
+  "España": "🇪🇸",
+  "Moscú": "🇷🇺",
+  "Rusia": "🇷🇺",
+  "Rusia +7": "🇷🇺",
+  "Brasil": "🇧🇷",
+  "Chile": "🇨🇱",
+  "Portugal": "🇵🇹",
+  "Islas Canarias": "🇮🇨",
+  "Colombia": "🇨🇴",
+  "Argentina": "🇦🇷",
+  "Venezuela": "🇻🇪",
+  "México": "🇲🇽",
+  "Japón": "🇯🇵",
+  "New York": "🇺🇸",
+  "Los Angeles": "🇺🇸",
+  "Australia": "🇦🇺",
+  "Sydney": "🇦🇺",
+};
+
 const copySavedEvent = (
   name: string,
   time: string
@@ -271,7 +291,8 @@ text += "══════════════════\n\n";
 text += `📌 ${name}\n`;
 text += `🕒 Hora servidor: ${time}\n\n`;
 
-text += "🌍 HORARIOS MUNDIALES\n\n";
+text += "🌐 HORARIOS MUNDIALES\n";
+text += "──────────────────\n\n";
 
   zones.forEach((zone) => {
     const [hours, minutes] =
@@ -293,14 +314,21 @@ text += "🌍 HORARIOS MUNDIALES\n\n";
           3600000
     );
 
-    text += `${zone.name}: ${convertedDate.toLocaleTimeString(
-      "es-ES",
-      {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }
-    )}\n`;
+const cleanName = zone.name
+  .replace(/🇪🇸|🇷🇺|🇧🇷|🇺🇸|🇯🇵|🇨🇱|🇵🇹|🇨🇴|🇦🇷|🇻🇪|🇲🇽|🇮🇨|🇦🇺/g, "")
+  .trim();
+const flag =
+  countryFlags[cleanName] || "";
+  
+
+text += `${flag} ${cleanName} → ${convertedDate.toLocaleTimeString(
+  "es-ES",
+  {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }
+)}\n`;  
   });
 
   navigator.clipboard.writeText(text);
