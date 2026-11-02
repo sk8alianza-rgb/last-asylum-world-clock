@@ -752,9 +752,7 @@ localStorage.setItem(
     >
       <strong>{event.name}</strong>
 
-      <div>
-        🕒 Servidor: {event.time}
-      </div>
+
 
 <button
   onClick={() => {
