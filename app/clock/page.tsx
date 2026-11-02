@@ -145,6 +145,43 @@ const updateServerTime = () => {
     Date.now().toString()
   );
 };
+
+const getFlag = (name: string) => {
+  const flags: Record<string, string> = {
+    "España": "🇪🇸",
+    "Moscú": "🇷🇺",
+    "Rusia": "🇷🇺",
+    "Rusia +7": "🇷🇺",
+    "Brasil": "🇧🇷",
+    "Chile": "🇨🇱",
+    "Portugal": "🇵🇹",
+    "Colombia": "🇨🇴",
+    "Argentina": "🇦🇷",
+    "Venezuela": "🇻🇪",
+    "México": "🇲🇽",
+    "Japón": "🇯🇵",
+    "New York": "🇺🇸",
+    "Los Angeles": "🇺🇸",
+    "Australia": "🇦🇺",
+    "Sydney": "🇦🇺",
+    "Islas Canarias": "🇮🇨",
+  };
+
+const cleanName = name
+  .replace(
+    /🇪🇸|🇷🇺|🇧🇷|🇺🇸|🇯🇵|🇨🇱|🇵🇹|🇨🇴|🇦🇷|🇻🇪|🇲🇽|🇮🇨|🇦🇺/g,
+    ""
+  )
+  .replace(/^ES\s*/, "")
+  .replace(/^RU\s*/, "")
+  .replace(/^BR\s*/, "")
+  .replace(/^US\s*/, "")
+  .replace(/^JP\s*/, "")
+  .trim();
+
+return flags[cleanName] || "🌍";
+};
+
 const deleteZone = (
   zoneName: string
 ) => {
@@ -165,19 +202,46 @@ const deleteZone = (
 };
 
 const addZone = () => {
-    if (!newCountry.trim()) return;
+  if (!newCountry.trim()) return;
 
-    setZones([
-      ...zones,
-      {
-        name: newCountry,
-        offset: Number(newOffset),
-      },
-    ]);
-
-    setNewCountry("");
-    setNewOffset("0");
+  const flags: Record<string, string> = {
+    "España": "🇪🇸",
+    "Moscú": "🇷🇺",
+    "Rusia": "🇷🇺",
+    "Rusia +7": "🇷🇺",
+    "Brasil": "🇧🇷",
+    "Chile": "🇨🇱",
+    "Portugal": "🇵🇹",
+    "Colombia": "🇨🇴",
+    "Argentina": "🇦🇷",
+    "Venezuela": "🇻🇪",
+    "México": "🇲🇽",
+    "Japón": "🇯🇵",
+    "New York": "🇺🇸",
+    "Los Angeles": "🇺🇸",
+    "Australia": "🇦🇺",
+    "Sydney": "🇦🇺",
+    "Islas Canarias": "🇮🇨",
   };
+
+  const cleanName = newCountry.trim();
+
+  const finalName = flags[cleanName]
+    ? `${flags[cleanName]} ${cleanName}`
+    : cleanName;
+
+  setZones([
+    ...zones,
+    {
+      name: finalName,
+      offset: Number(newOffset),
+    },
+  ]);
+
+  setNewCountry("");
+  setNewOffset("0");
+};
+
 const saveEvent = () => {
   if (!eventName.trim()) return;
   if (!eventTime.trim()) return;
@@ -218,7 +282,7 @@ let text = "";
 text += "🏰 EVENTO DE ALIANZA\n";
 text += "══════════════════\n\n";
 
-text += `📌 ${name}\n`;
+text += `📌 ${eventName}\n`;
 text += `🕒 Hora servidor: ${eventTime}\n\n`;
 
 text += "🌍 HORARIOS MUNDIALES\n\n";
@@ -317,6 +381,7 @@ text += "──────────────────\n\n";
 const cleanName = zone.name
   .replace(/🇪🇸|🇷🇺|🇧🇷|🇺🇸|🇯🇵|🇨🇱|🇵🇹|🇨🇴|🇦🇷|🇻🇪|🇲🇽|🇮🇨|🇦🇺/g, "")
   .trim();
+  console.log(cleanName);
 const flag =
   countryFlags[cleanName] || "";
   
@@ -788,7 +853,6 @@ localStorage.setItem(
   {zone.offset >= 0 ? "+" : ""}
   {zone.offset}h servidor)
 </span>
-
             <strong
               style={{
                 color: timeColor,
