@@ -23,6 +23,11 @@ export default function Home() {
       <Link href="/roster">
         👥 N3X Roster
       </Link>
+
+          <Link href="/planner">
+        🏛️ Sanctuary Planner
+      </Link>
+      
     </main>
   );
 }
