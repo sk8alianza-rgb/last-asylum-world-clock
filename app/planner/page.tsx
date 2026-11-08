@@ -635,6 +635,19 @@ const sanctuaries = customSanctuaries;
       "Segoe UI, Arial, sans-serif",
   }}
 >
+  <Link
+  href="/"
+  style={{
+    display: "inline-block",
+    marginBottom: "20px",
+    color: "#7dd3fc",
+    textDecoration: "none",
+    fontWeight: "bold",
+  }}
+>
+  ⬅ Volver al Centro de Mando
+</Link>
+
   <h1
   style={{
     color: "#f59e0b",
