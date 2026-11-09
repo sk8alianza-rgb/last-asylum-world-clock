@@ -16,6 +16,7 @@ type Player = {
   power: number;
     troop2?: number;
   troop3?: number;
+   troop4?: number;
 };
 const players: Player[] = [
   {
@@ -23,6 +24,7 @@ const players: Player[] = [
   power: 34200000,
   troop2: 31500000,
   troop3: 29800000,
+  
 },
   { nickname: "iKWAI", power: 32400000 },
   { nickname: "Igor", power: 24000000 },
@@ -54,6 +56,7 @@ function RosterPanel({
   setEditT1,
   setEditT2,
   setEditT3,
+   setEditT4
 }: any) {
   return (
     <div
@@ -89,6 +92,7 @@ function RosterPanel({
             setEditT1(String(player.power));
             setEditT2(String(player.troop2 ?? 0));
             setEditT3(String(player.troop3 ?? 0));
+            setEditT4(String(player.troop4 ?? 0));
           }}
           style={{
             display: "flex",
@@ -130,10 +134,12 @@ function PlayerEditor({
   editT1,
   editT2,
   editT3,
+  editT4,
   setEditNickname,
   setEditT1,
   setEditT2,
   setEditT3,
+  setEditT4,
   setSelectedPlayer,
   playersData,
   setPlayersData,
@@ -241,6 +247,18 @@ return (
   />
 </p>
 
+<p>
+  T4:
+  <input
+    value={editT4}
+    onChange={(e) => setEditT4(e.target.value)}
+    style={{
+      marginLeft: 10,
+      width: 150,
+    }}
+  />
+</p>
+
 <button
   onClick={() => {
     if (!selectedPlayer) return;
@@ -251,6 +269,7 @@ return (
       power: Number(editT1),
       troop2: Number(editT2),
       troop3: Number(editT3),
+      troop4: Number(editT4),
     };
 
     setPlayersData(
@@ -323,6 +342,7 @@ export default function Home() {
 const [editT1, setEditT1] = useState("");
 const [editT2, setEditT2] = useState("");
 const [editT3, setEditT3] = useState("");
+const [editT4, setEditT4] = useState("");
 
 const [selectedSanctuary, setSelectedSanctuary] =
   useState<number | null>(null);
@@ -349,6 +369,8 @@ const [newT2, setNewT2] =
 
 const [newT3, setNewT3] =
   useState("");
+
+  const [newT4, setNewT4] = useState("");
 
   const fileInputRef =
      useRef<HTMLInputElement>(null);
@@ -876,22 +898,25 @@ textTransform: "uppercase",
     setEditT1={setEditT1}
     setEditT2={setEditT2}
     setEditT3={setEditT3}
+     setEditT4={setEditT4}
   />
 
-  <PlayerEditor
-    selectedPlayer={selectedPlayer}
-    editNickname={editNickname}
-    editT1={editT1}
-    editT2={editT2}
-    editT3={editT3}
-    setEditNickname={setEditNickname}
-    setEditT1={setEditT1}
-    setEditT2={setEditT2}
-    setEditT3={setEditT3}
-    setSelectedPlayer={setSelectedPlayer}
-    playersData={playersData}
-    setPlayersData={setPlayersData}
-  />
+<PlayerEditor
+  selectedPlayer={selectedPlayer}
+  editNickname={editNickname}
+  editT1={editT1}
+  editT2={editT2}
+  editT3={editT3}
+  editT4={editT4}
+  setEditNickname={setEditNickname}
+  setEditT1={setEditT1}
+  setEditT2={setEditT2}
+  setEditT3={setEditT3}
+  setEditT4={setEditT4}
+  setSelectedPlayer={setSelectedPlayer}
+  playersData={playersData}
+  setPlayersData={setPlayersData}
+/>
 </div>
 
 <div
@@ -1207,6 +1232,7 @@ newAssignments[
       setEditT1(String(player.power));
       setEditT2(String(player.troop2 ?? 0));
       setEditT3(String(player.troop3 ?? 0));
+      setEditT4(String(player.troop4 ?? 0));
     }
   }
 }}
@@ -1442,6 +1468,7 @@ whiteSpace: "nowrap",
       power: Number(editT1),
       troop2: Number(editT2),
       troop3: Number(editT3),
+      troop4: Number(editT4),
     };
 
     setPlayersData(
