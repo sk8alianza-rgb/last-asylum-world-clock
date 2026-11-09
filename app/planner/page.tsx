@@ -63,7 +63,7 @@ function RosterPanel({
         borderRadius: "16px",
         padding: "20px",
        width: "320px",
-        maxHeight: "500px",
+        maxHeight: "360px",
         overflowY: "auto",
         boxShadow:
           "0 8px 24px rgba(0,0,0,0.35)",
@@ -141,80 +141,7 @@ function PlayerEditor({
 
 
 if (!selectedPlayer) {
-  return (
-    <div
-      style={{
-        background: "#111827",
-        borderRadius: 12,
-        padding: 24,
-        width: "550px",
-        minHeight: "320px",
-        border: "1px solid #1f2937",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-textAlign: "center",
-      }}
-    >
-      <h2
-        style={{
-          marginTop: 0,
-          marginBottom: "16px",
-          color: "#f59e0b",
-          fontSize: "1.8rem",
-          textShadow:
-            "0 0 10px rgba(245,158,11,0.3)",
-        }}
-      >
-        👤 Editor de jugadores
-      </h2>
-
-      <p
-        style={{
-          color: "#94a3b8",
-          fontSize: "1rem",
-          lineHeight: 1.6,
-        }}
-      >
-        Selecciona un jugador del roster para
-        visualizar o modificar sus estadísticas.
-      </p>
-
-      <div
-        style={{
-          marginTop: 20,
-          padding: "16px",
-          background: "#1e293b",
-          borderRadius: 8,
-          border: "1px solid #334155",
-        }}
-      >
-        <h4
-          style={{
-            marginTop: 0,
-            color: "#38bdf8",
-          }}
-        >
-          📊 Centro de control
-        </h4>
-
-        <p>👥 Jugadores cargados: {playersData.length}</p>
-
-        <hr
-          style={{
-            borderColor: "#334155",
-            margin: "12px 0",
-          }}
-        />
-
-        <p>✏️ Modificar tropas y nickname</p>
-        <p>💾 Guardar cambios</p>
-        <p>🗑️ Eliminar jugadores</p>
-        <p>📈 Consultar estadísticas</p>
-      </div>
-    </div>
-  );
+  return null;
 }
 return (
   <div
@@ -387,7 +314,9 @@ return (
 }
 
 export default function Home() {
-  const size = 35;
+  const size = 55;
+
+  const cellSize = 20;
 
   const [selectedPlayer, setSelectedPlayer] =
     useState<Player | null>(null);
@@ -671,110 +600,103 @@ const sanctuaries = customSanctuaries;
   Last Asylum • Servidor 104
 </p>
 
+
+
 <div
   style={{
-    display: "flex",
+display: "flex",
     gap: "20px",
     alignItems: "flex-start",
     marginBottom: "20px",
   }}
 >
-  <RosterPanel
-    sortedPlayers={sortedPlayers}
-    selectedPlayer={selectedPlayer}
-    setSelectedPlayer={setSelectedPlayer}
-    setEditNickname={setEditNickname}
-    setEditT1={setEditT1}
-    setEditT2={setEditT2}
-    setEditT3={setEditT3}
-  />
 
-  <PlayerEditor
-    selectedPlayer={selectedPlayer}
-    editNickname={editNickname}
-    editT1={editT1}
-    editT2={editT2}
-    editT3={editT3}
-    setEditNickname={setEditNickname}
-    setEditT1={setEditT1}
-    setEditT2={setEditT2}
-    setEditT3={setEditT3}
-    setSelectedPlayer={setSelectedPlayer}
-    playersData={playersData}
-    setPlayersData={setPlayersData}
-  />
-</div>
 
 <div
   style={{
-    marginTop: 20,
-    background: "#102030",
- border: "1px solid #0f172a",
-    borderRadius: "16px",
-    padding: "20px",
-    boxShadow:
-      "0 8px 24px rgba(0,0,0,0.35)",
-   width: "600px",
+  display: "flex",
+alignItems: "center",
+gap: "10px",
+flexWrap: "nowrap",
   }}
 >
-  <h3
-    style={{
-      color: "#d84d23",
-      marginTop: 0,
-      marginBottom: 15,
-    }}
-  >
-    🐝 Control de Colmenas
-  </h3>
 
-  <div
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: "10px",
-      flexWrap: "nowrap",
-    }}
-  >
 
-    <button
-      onClick={() => {
-        if (
-          confirm(
-            "¿Restaurar distribución automática?"
-          )
-        ) {
-          setManualAssignments({});
-          setSelectedPlayer(null);
-          setAssignmentMode("auto");
-        }
-      }}
-style={{
-  width: "180px",
-  height: "60px",
-  background:
-    "linear-gradient(135deg, #f59e0b, #ea580c)",
-  color: "white",
-  border: "none",
-  borderRadius: "12px",
-  cursor: "pointer",
-  fontWeight: "bold",
-  fontSize: "1.15rem",
-  boxShadow:
-    "0 0 15px rgba(245,158,11,0.35)",
-}}
->
-  🔄 REINICIAR
-    </button>
-    <div
+<div
   style={{
-    display: "flex",
-    gap: "15px",
-    justifyContent: "center",
-    marginTop: "15px",
+    background: "#102030",
+    border: "1px solid #334155",
+    borderRadius: "12px",
+    padding: "15px",
+    width: "620px",
   }}
-></div>
-<button
+>
+ <div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "15px",
+  }}
+>
+   <button
+    onClick={() =>
+      fileInputRef.current?.click()
+    }
+    style={{
+      marginLeft: 10,
+      padding: "8px 14px",
+      background: "#0ea5e9",
+      color: "white",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+    }}
+  >
+    📥 Importar roster
+  </button>
 
+   <button
+    onClick={() => {
+ const dataStr = JSON.stringify(
+  {
+    players: playersData,
+    assignments: manualAssignments,
+  },
+  null,
+  2
+);
+
+      const blob = new Blob([dataStr], {
+        type: "application/json",
+      });
+
+      const url =
+        URL.createObjectURL(blob);
+
+      const link =
+        document.createElement("a");
+
+      link.href = url;
+      link.download =
+        "n3x-roster.json";
+
+      link.click();
+
+      URL.revokeObjectURL(url);
+    }}
+    style={{
+      padding: "8px 14px",
+      background: "#8b5cf6",
+      color: "white",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+    }}
+  >
+    📤 Exportar roster
+  </button>
+
+ <button
 
   onClick={() => {
 
@@ -806,7 +728,7 @@ style={{
   📦 REUBICAR
 </button>
 
-<button
+  <button
   onClick={() => {
 
     setDeleteMode(!deleteMode);
@@ -870,26 +792,106 @@ style={{
   ➕ SANTUARIO
 </button>
 
-  </div>
+<div
+ style={{
+marginTop: 25,
+ marginBottom: 15,
+display: "flex",
+flexDirection: "row",
+alignItems: "center",
+gap: 15,
+flexWrap: "nowrap",
+ }}
+ >
+</div>
+</div>
+
+
+
+
+
+ <input
+ type="text"
+ value={cityName}
+ onChange={(e) =>
+ setCityName(e.target.value)
+ }
+ placeholder="Nombre ciudad"
+style={{
+ padding: "6px",
+ borderRadius: "6px",
+ border: "1px solid #475569",
+
+ background: "#3b261e",
+color: "#fbbf24",
+fontWeight: "bold",
+textTransform: "uppercase",
+
+}}
+/>
+
+<div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    marginTop: "10px",
+  }}
+>
+  <span>Ancho:</span>
+
+  <input
+    type="number"
+    value={cityWidth}
+    onChange={(e) =>
+      setCityWidth(Number(e.target.value))
+    }
+    style={{
+      width: "50px",
+    }}
+  />
+
+  <span>Alto:</span>
+
+  <input
+    type="number"
+    value={cityHeight}
+    onChange={(e) =>
+      setCityHeight(Number(e.target.value))
+    }
+    style={{
+      width: "50px",
+    }}
+  />
+</div>
+</div>
 
 </div>
 
-     <p>
-Ciudad: {cityWidth} columnas × {cityHeight} filas
-</p>
+  <RosterPanel
+    sortedPlayers={sortedPlayers}
+    selectedPlayer={selectedPlayer}
+    setSelectedPlayer={setSelectedPlayer}
+    setEditNickname={setEditNickname}
+    setEditT1={setEditT1}
+    setEditT2={setEditT2}
+    setEditT3={setEditT3}
+  />
 
-      <p>
-        Jugadores cargados: {players.length}
-      </p>
-
-      <div
-  style={{
-    display: "flex",
-    gap: "20px",
-    alignItems: "flex-start",
-  }}
->
-
+  <PlayerEditor
+    selectedPlayer={selectedPlayer}
+    editNickname={editNickname}
+    editT1={editT1}
+    editT2={editT2}
+    editT3={editT3}
+    setEditNickname={setEditNickname}
+    setEditT1={setEditT1}
+    setEditT2={setEditT2}
+    setEditT3={setEditT3}
+    setSelectedPlayer={setSelectedPlayer}
+    playersData={playersData}
+    setPlayersData={setPlayersData}
+  />
 </div>
 
 <div
@@ -921,21 +923,8 @@ Ciudad: {cityWidth} columnas × {cityHeight} filas
 
 <div
   style={{
-    marginTop: 20,
     display: "grid",
-    gridTemplateColumns: `repeat(${size}, 20px)`,
-    gap: "1px",
-    width: "fit-content",
-    background: "#1e293b",
-    padding: "10px",
-    borderRadius: "10px",
-  }}
-></div>
-
-<div
-  style={{
-    display: "grid",
-    gridTemplateColumns: `repeat(${size}, 20px)`,
+   gridTemplateColumns: `repeat(${size}, ${cellSize}px)`,
     gap: "1px",
     width: "fit-content",
     background: "#1e293b",
@@ -943,73 +932,6 @@ Ciudad: {cityWidth} columnas × {cityHeight} filas
     borderRadius: "10px",
   }}
 >
-<div
-  style={{
-    marginTop: 15,
-    marginBottom: 15,
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
-  }}
->
-  <span
-    style={{
-      color: "white",
-      fontWeight: "bold",
-    }}
-  >
-    Ciudad:
-  </span>
-
-<p>Nombre:</p>
-  <input
-  type="text"
-  value={cityName}
-  onChange={(e) =>
-    setCityName(e.target.value)
-  }
-  placeholder="Nombre ciudad"
- style={{
-  padding: "6px",
-  borderRadius: "6px",
-  border: "1px solid #475569",
-
-  background: "#3b261e",
-color: "#fbbf24",
-fontWeight: "bold",
-textTransform: "uppercase",
-
-}}
-/>
-
-<p>Ancho:</p>
-
-<input
-  type="number"
-  value={cityWidth}
-  onChange={(e) =>
-    setCityWidth(Number(e.target.value))
-  }
-  style={{
-    width: "50px",
-     marginLeft: "5px",
-  }}
-/>
-
-<p>Alto:</p>
-
-<input
-  type="number"
-  value={cityHeight}
-  onChange={(e) =>
-    setCityHeight(Number(e.target.value))
-  }
-  style={{
-    width: "50px",
-     marginLeft: "5px",
-  }}
-/>
-</div>
 
 {Array.from({ length: size * size }).map((_, index) => {
 
@@ -1581,70 +1503,11 @@ whiteSpace: "nowrap",
   </div>
 )}
 
-
-
 <div
   style={{
     marginTop: 20,
   }}
 >
-  <button
-    onClick={() => {
- const dataStr = JSON.stringify(
-  {
-    players: playersData,
-    assignments: manualAssignments,
-  },
-  null,
-  2
-);
-
-      const blob = new Blob([dataStr], {
-        type: "application/json",
-      });
-
-      const url =
-        URL.createObjectURL(blob);
-
-      const link =
-        document.createElement("a");
-
-      link.href = url;
-      link.download =
-        "n3x-roster.json";
-
-      link.click();
-
-      URL.revokeObjectURL(url);
-    }}
-    style={{
-      padding: "8px 14px",
-      background: "#8b5cf6",
-      color: "white",
-      border: "none",
-      borderRadius: "4px",
-      cursor: "pointer",
-    }}
-  >
-    📤 Exportar roster
-  </button>
-
-  <button
-    onClick={() =>
-      fileInputRef.current?.click()
-    }
-    style={{
-      marginLeft: 10,
-      padding: "8px 14px",
-      background: "#0ea5e9",
-      color: "white",
-      border: "none",
-      borderRadius: "4px",
-      cursor: "pointer",
-    }}
-  >
-    📥 Importar roster
-  </button>
 
  <input
   type="file"
@@ -1700,12 +1563,6 @@ if (importedData.players) {
 />
 </div>
 
-
-      <div style={{ marginTop: 20 }}>
-        <p>🟫 Ciudad central 13×13</p>
-        <p>🟦 Ring 1</p>
-        <p>🟧 Ring 2</p>
-      </div>
     </main>
   );
 }
